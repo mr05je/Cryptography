@@ -3,23 +3,6 @@
 #include <map>
 #include <vector>
 
-std::map<char, std::pair<int, int>> codingTable = {
-    {'А', {0, 0}}, {'Б', {0, 1}}, {'В', {0, 2}}, {'Г', {0, 3}},
-    {'Д', {0, 4}}, {'Е', {0, 5}}, {'Ж', {0, 6}}, {'З', {0, 7}},
-    {'И', {0, 8}},
-    {'Й', {1, 0}}, {'К', {1, 1}}, {'Л', {1, 2}}, {'М', {1, 3}},
-    {'Н', {1, 4}}, {'О', {1, 5}}, {'П', {1, 6}}, {'Р', {1, 7}},
-    {'С', {1, 8}},
-    {'Т', {2, 0}}, {'У', {2, 1}}, {'Ф', {2, 2}}, {'Х', {2, 3}},
-    {'Ц', {2, 4}}, {'Ч', {2, 5}}, {'Ш', {2, 6}}, {'Щ', {2, 7}},
-    {'Ъ', {2, 8}},
-    {'Ы', {3, 0}}, {'Ь', {3, 1}}, {'Э', {3, 2}}, {'Ю', {3, 3}},
-    {'Я', {3, 4}}, {'_', {3, 5}}, {'.', {3, 6}}, {',', {3, 7}},
-    {'?', {3, 8}},
-    {':', {4, 0}}, {';', {4, 1}}, {'-', {4, 2}}, {'!', {4, 3}},
-    {'"', {4, 4}}
-};
-
 std::map<std::pair<int, int>, char> reverseCodingTable = {
     {{0, 0}, 'А'}, {{0, 1}, 'Б'}, {{0, 2}, 'В'}, {{0, 3}, 'Г'},
     {{0, 4}, 'Д'}, {{0, 5}, 'Е'}, {{0, 6}, 'Ж'}, {{0, 7}, 'З'},
@@ -52,10 +35,11 @@ int main() {
 std::string encodeText(const std::string &text) {
     std::string encodedText;
     for (char c : text) {
-        if (codingTable.find(c) != codingTable.end()) {
-            encodedText += std::to_string(codingTable[c].first) + std::to_string(codingTable[c].second) + "_";
-        } else {
-            encodedText += "?? ";
+        for (const auto &pair : reverseCodingTable) {
+            if (pair.second == c) {
+                encodedText += std::to_string(pair.first.first) + std::to_string(pair.first.second) + " ";
+                break;
+            }
         }
     }
     return encodedText;
