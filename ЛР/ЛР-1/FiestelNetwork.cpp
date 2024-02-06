@@ -22,13 +22,13 @@ void FiestelNetwork::init() {
         }
     }
 
-    std::string base64_k = Base64().Encode(this->_key);
+    std::string base64_k = Base64::Encode(this->_key);
     std::string base64_sub_k;
 
     std::array<uint8_t, 7> sub_k_b = {};
 
     if (base64_k.length() > 8) {
-        int middle = base64_k.length()/2;
+        int middle = (int)base64_k.length()/2;
         base64_sub_k = std::string(base64_k.begin() + middle - 4, base64_k.end() - middle + 4);
     } else {
         while (base64_k.length() < 8) {
@@ -71,15 +71,19 @@ std::array<uint8_t, 6> FiestelNetwork::gen_key(int round) {
     right26bits |= static_cast<uint32_t>(this->_key_52b[5]) << 4;
     right26bits |= static_cast<uint32_t>(this->_key_52b[6]) >> 4;
 
-    left[0] = static_cast<uint8_t>((left26bits >> 24) & 0xFF);
-    left[1] = static_cast<uint8_t>((left26bits >> 16) & 0xFF);
-    left[2] = static_cast<uint8_t>((left26bits >> 8) & 0xFF);
-    left[3] = static_cast<uint8_t>(left26bits& 0xFF);
+    std::array<uint8_t, 6> res {};
 
-    right[0] = static_cast<uint8_t>((right26bits >> 24) & 0xFF);
-    right[1] = static_cast<uint8_t>((right26bits >> 16) & 0xFF);
-    right[2] = static_cast<uint8_t>((right26bits >> 8) & 0xFF);
-    right[3] = static_cast<uint8_t>(right26bits & 0xFF);
+    for (int i = 0; i < 8; i++) {
+        int t = i + round;
 
-    return std::array<uint8_t , 6> {};
+        while (t > 25) t -= 25;
+
+        if (i % 2 == 0) {
+            left26bits = left26bits & (~(1<<this->_CI[0][i/2]));
+        } else {
+            right26bits = right26bits & (~(1<<this->_CI[1][i/2]));
+        }
+    }
+
+    return std::array<uint8_t , 6> {left[0], left[1], left[2], right[0], right[1], right[2]};
 }
