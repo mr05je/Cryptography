@@ -87,3 +87,4 @@ std::array<uint8_t, 6> FiestelNetwork::gen_key(int round) {
 
     return std::array<uint8_t , 6> {left[0], left[1], left[2], right[0], right[1], right[2]};
 }
+
